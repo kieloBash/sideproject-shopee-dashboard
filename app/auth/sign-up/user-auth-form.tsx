@@ -47,6 +47,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true);
     const res = await createNewUser({ ...values });
     if (res) {
+      form.reset();
       setIsLoading(false);
     }
   }

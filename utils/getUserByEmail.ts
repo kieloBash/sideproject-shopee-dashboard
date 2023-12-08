@@ -1,51 +1,58 @@
-import { UserRolesType } from "@/lib/interfaces/user.interface";
+import supabase from "./supabase";
 
-export async function getUserByEmail({
-  email,
-}: {
-  email: string | undefined | null;
-}) {
+export async function getUserByEmail({ email }: { email: string }) {
   console.log(email);
   try {
-    return null;
+    // get user using email from the users table
+
+    // Check if email is provided
+    if (!email) {
+      throw new Error("Email is required");
+    }
+
+    // Query the users table based on the email
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+    // Check for errors
+    if (error) {
+      throw new Error(`Error getting User by Email: ${error.message}`);
+    }
+
+    if (!data) {
+      throw new Error(`No User found`);
+    }
+
+    // Return the user data
+    return { id: data.id, email: data.email, role: data.role };
   } catch (error: any) {
     throw new Error(`Error getting User by Email: ${error.message}`);
   }
 }
 
-export async function authUser({
-  email,
-  password,
-  role = "user",
-}: {
-  email: string;
-  password: string;
-  role?: UserRolesType;
-}) {
+export async function authUser({ email }: { email: string }) {
   try {
-    // connectDB();
+    // Get user by email
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
 
-    // const user = await User.findOne({ email });
-    // const userparent = await Parent.findOne({ email });
-    // // const userparent = false;
-    // if (!user && !userparent) {
-    //   console.log("No email found");
-    //   throw new Error("Email does not exist!");
-    // } else if (!user) {
-    //   console.log("User is parent");
-    //   return {
-    //     ...userparent._doc,
-    //     _id: userparent._id.toString(),
-    //     children: userparent?.children.map((s: any) => {
-    //       return { ...s, _id: s._id.toString() };
-    //     }),
-    //   };
-    // } else if (user) {
-    //   console.log("User is not parent");
-    //   return { ...user._doc, _id: user._id.toString() };
-    // }
-    return null;
+    // Check for errors
+    if (error) {
+      throw new Error(`Error getting User by Email: ${error.message}`);
+    }
+
+    // If the user is not found, return null
+    if (!user) {
+      return null;
+    }
+
+    return user;
   } catch (error: any) {
-    throw new Error(`Error getting User by Email: ${error.message}`);
+    throw new Error(`Error authenticating user: ${error.message}`);
   }
 }
