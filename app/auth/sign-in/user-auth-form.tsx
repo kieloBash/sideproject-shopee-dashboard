@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowBigDownDash, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import useFetchMiners from "@/hooks/useMiners";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -21,6 +22,9 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
       setIsLoading(false);
     }, 3000);
   }
+
+  const miners = useFetchMiners();
+  console.log(miners);
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
