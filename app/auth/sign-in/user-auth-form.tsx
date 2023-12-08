@@ -23,25 +23,8 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
     }, 3000);
   }
 
-  const miners = useFetchMiners();
-  
-  if (miners.isLoading)
-    return (
-      <div className="fixed inset-0 z-[100] flex justify-center items-center">
-        <Loader2 className="w-10 h-10 animate-spin" />
-      </div>
-    );
   return (
     <>
-      <ul className="max-h-[10rem] overflow-y-auto">
-        {miners?.data?.map((miner) => {
-          return (
-            <li className="" key={miner.id}>
-              {miner.miner_name}
-            </li>
-          );
-        })}
-      </ul>
       <div className={cn("grid gap-6", className)} {...props}>
         <form onSubmit={onSubmit}>
           <div className="grid gap-2">
