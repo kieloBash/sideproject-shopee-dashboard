@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -26,6 +25,7 @@ import {
   Check,
   ChevronDownIcon,
   CircleIcon,
+  DollarSign,
   MinusCircle,
   PenBox,
   ShoppingBag,
@@ -34,13 +34,21 @@ import {
 // BACKEND
 import { Miner } from "@/lib/interfaces";
 import dayjs from "dayjs";
+import { useMinerContext } from "@/contexts/MinerProvider";
 
 export function MinerCard({ miner }: { miner: Miner }) {
+  const { setSelectedMiner, setToggleView, setToggleDelete } =
+    useMinerContext();
+
+  function getTotalOfCart() {
+    const total = miner.cart.reduce((acc, item) => acc + item, 0);
+    return total;
+  }
   return (
     <Card>
       <CardHeader className="grid grid-cols-3 items-start gap-4 space-y-0">
         <div className="space-y-1 col-span-1">
-          <CardTitle>{miner.miner_name}</CardTitle>
+          <CardTitle className="text-xl">{miner.miner_name}</CardTitle>
           <CardDescription>
             <div className="flex items-center">
               <ShoppingBag className="mr-1 h-3 w-3" />
@@ -49,6 +57,10 @@ export function MinerCard({ miner }: { miner: Miner }) {
             <div className="flex items-center">
               <BadgeCheck className="mr-1 h-3 w-3" />
               {miner.free} free
+            </div>
+            <div className="flex items-center w-60">
+              <DollarSign className="mr-1 h-3 w-3" />
+              {getTotalOfCart().toLocaleString()} total
             </div>
           </CardDescription>
         </div>
@@ -78,13 +90,24 @@ export function MinerCard({ miner }: { miner: Miner }) {
               >
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSelectedMiner(miner)}>
                   <PenBox className="mr-2 h-4 w-4" /> Edit Miner
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedMiner(miner);
+                    setToggleView(true);
+                  }}
+                >
                   <ShoppingBag className="mr-2 h-4 w-4" /> View Cart
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedMiner(miner);
+                    setToggleDelete(true);
+                  }}
+                >
                   <MinusCircle className="mr-2 h-4 w-4" /> Delete Miner
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -25,7 +25,7 @@ const Sidebar = () => {
           onClick={() => setToggle(true)}
           variant={"ghostBtn"}
           size={"btn"}
-          className="fixed top-4 right-4 text-main-default"
+          className="fixed top-4 right-4 text-main-default z-[110]"
         >
           <SidebarIcon className="w-full h-full" />
         </Button>

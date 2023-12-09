@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -27,14 +27,19 @@ import {
 } from "@/components/ui/popover";
 import useUniqueDates from "@/hooks/useUniqueDates";
 import dayjs from "dayjs";
+import { useMinerContext } from "@/contexts/MinerProvider";
+import { ViewMinersModal } from "./modals/view";
+import { DeleteMinerModal } from "./modals/delete";
+import { AddMinerModal } from "./modals/add";
 
 export type StatusMinerFilterType = "All" | "Pending" | "Confirmed";
 const TransactionComponent = () => {
   const [filter, setFilter] = useState<StatusMinerFilterType>("All");
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
-  const miners = useFetchMiners({ filter, date });
+  const { selectedMiner } = useMinerContext();
 
+  const miners = useFetchMiners({ filter, date });
   const uniqueDates = useUniqueDates();
 
   useEffect(() => {
@@ -56,6 +61,9 @@ const TransactionComponent = () => {
 
   return (
     <>
+      {selectedMiner && <ViewMinersModal />}
+      {selectedMiner && <DeleteMinerModal />}
+      <AddMinerModal />
       <div className="w-full flex gap-2 justify-start items-center">
         <Popover>
           <PopoverTrigger asChild>
@@ -123,14 +131,14 @@ const TransactionComponent = () => {
         <>
           {miners.data && miners.data.length > 0 ? (
             <>
-              <ScrollArea className="px-2 w-full h-[calc(100vh-10rem)] mt-2">
+              <ScrollArea className="px-2 w-full h-[calc(100vh-9.6rem)] mt-2">
                 <div className="w-full py-2 h-full flex flex-col gap-1.5">
                   {miners?.data?.map((miner) => {
                     return <MinerCard miner={miner} key={miner.id} />;
                   })}
                 </div>
               </ScrollArea>
-              <div className="w-full flex justify-end items-center mt-1">
+              <div className="w-full flex justify-end items-center mt-2">
                 <span className="text-sm text-foreground">
                   {miners.data.length} results
                 </span>

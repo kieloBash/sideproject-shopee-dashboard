@@ -25,6 +25,8 @@ const useUniqueDates = () => {
 
   const d = data as string[];
 
+  console.log(d);
+
   return { data: d || [], isLoading };
 };
 

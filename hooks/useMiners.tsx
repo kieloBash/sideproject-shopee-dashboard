@@ -13,7 +13,7 @@ const useFetchMiners = ({
   date: Date | undefined;
 }) => {
   const { data, isLoading } = useQuery({
-    queryKey: [`miner`, filter, date],
+    queryKey: [`miners`, filter, date],
     queryFn: async () => {
       let supabaseQuery = supabase.from("invoice").select("*");
 

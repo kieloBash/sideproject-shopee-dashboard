@@ -1,8 +1,6 @@
 "use client";
 import * as React from "react";
 
-export type TurnType = "TurnA" | "TurnB" | null;
-
 export type SidebarContextType = {
   toggle: boolean;
   setToggle: (temp: boolean) => void;
