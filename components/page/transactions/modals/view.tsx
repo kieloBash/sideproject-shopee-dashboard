@@ -169,7 +169,7 @@ export function ViewMinersModal() {
             onClick={handleSave}
           >
             Save Changes{" "}
-            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+            {isLoading && <Loader2 className="w-5 h-5 animate-spin ml-2" />}
           </Button>
         </DialogFooter>
       </DialogContent>

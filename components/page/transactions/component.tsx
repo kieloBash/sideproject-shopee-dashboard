@@ -31,6 +31,7 @@ import { useMinerContext } from "@/contexts/MinerProvider";
 import { ViewMinersModal } from "./modals/view";
 import { DeleteMinerModal } from "./modals/delete";
 import { AddMinerModal } from "./modals/add";
+import { EditMinerModal } from "./modals/edit";
 
 export type StatusMinerFilterType = "All" | "Pending" | "Confirmed";
 const TransactionComponent = () => {
@@ -63,6 +64,7 @@ const TransactionComponent = () => {
     <>
       {selectedMiner && <ViewMinersModal />}
       {selectedMiner && <DeleteMinerModal />}
+      {selectedMiner && <EditMinerModal />}
       <AddMinerModal />
       <div className="w-full flex gap-2 justify-start items-center">
         <Popover>

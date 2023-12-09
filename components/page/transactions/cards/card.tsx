@@ -41,7 +41,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export function MinerCard({ miner }: { miner: Miner }) {
-  const { setSelectedMiner, setToggleView, setToggleDelete } =
+  const { setSelectedMiner, setToggleView, setToggleDelete, setToggleEdit } =
     useMinerContext();
 
   const { toast } = useToast();
@@ -129,8 +129,13 @@ export function MinerCard({ miner }: { miner: Miner }) {
               >
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setSelectedMiner(miner)}>
-                  <PenBox className="mr-2 h-4 w-4" /> Edit Miner
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedMiner(miner);
+                    setToggleEdit(true);
+                  }}
+                >
+                  <PenBox className="mr-2 h-4 w-4" /> Edit Name
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
@@ -138,7 +143,7 @@ export function MinerCard({ miner }: { miner: Miner }) {
                     setToggleView(true);
                   }}
                 >
-                  <ShoppingBag className="mr-2 h-4 w-4" /> View Cart
+                  <ShoppingBag className="mr-2 h-4 w-4" /> Cart
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
