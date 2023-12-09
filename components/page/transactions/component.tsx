@@ -1,6 +1,6 @@
 "use client";
 import useFetchMiners from "@/hooks/useMiners";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // UI
 import { MinerCard } from "./cards/card";
@@ -50,7 +50,7 @@ const TransactionComponent = () => {
       {selectedMiner && <DeleteMinerModal />}
       {selectedMiner && <EditMinerModal />}
       <AddMinerModal />
-      <ListMinerModal date={date}/>
+      <ListMinerModal date={date} />
       <div className="w-full flex gap-2 justify-start items-center">
         <Popover>
           <PopoverTrigger asChild>
