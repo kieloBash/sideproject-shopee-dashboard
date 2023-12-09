@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
-import { SidebarClose, SidebarIcon } from "lucide-react";
+import { LogOut, SidebarClose, SidebarIcon } from "lucide-react";
+import TooltipButton from "./TooltipButton";
+import { signOut } from "next-auth/react";
 
 const Sidebar = () => {
   const LINKS = [
@@ -64,10 +66,20 @@ const Sidebar = () => {
               </Link>
             );
           })}
+          <li className={`py-2 text-center mt-10`}>
+            <Button
+              variant={"ghostBtn"}
+              className="flex justify-center items-center gap-2 group hover:text-slate-300"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              <span className="text-2xl">Sign Out</span>
+              <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
+            </Button>
+          </li>
         </ul>
       </section>
 
-      <section className="fixed top-0 right-0 hidden w-48 p-4 h-screen z-[110] bg-main-default text-white lg:flex justify-center items-start pt-20">
+      <section className="fixed top-0 right-0 hidden w-48 p-4 h-screen z-[110] bg-main-default text-white lg:flex flex-col justify-between items-center pt-20">
         <Button
           type="button"
           onClick={() => setToggle(false)}
@@ -101,6 +113,16 @@ const Sidebar = () => {
             );
           })}
         </ul>
+        <TooltipButton tooltip="Sign Out">
+          <Button
+            variant={"ghostBtn"}
+            className="flex justify-center items-center gap-2 group hover:text-slate-300"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            <span className="">Sign out</span>
+            <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
+          </Button>
+        </TooltipButton>
       </section>
     </>
   );
