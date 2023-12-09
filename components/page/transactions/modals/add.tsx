@@ -30,17 +30,20 @@ import supabase from "@/utils/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import useDebounce from "@/hooks/useDebounce";
+import useFetchMinersSearch from "@/hooks/useMinersSearch";
 
 const formSchema = z.object({
-  miner_name: z.string().min(1, {
-    message: "Miner Name must be at least 1 characters.",
-  }),
+  // miner_name: z.string().min(1, {
+  //   message: "Miner Name must be at least 1 characters.",
+  // }),
   free: z.number().gte(0),
 });
 
 export function AddMinerModal() {
   const [cart, setCart] = useState<number[]>([]);
   const [item, setItem] = useState<number>(0);
+  const [miner_name, setMiner_name] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -51,15 +54,17 @@ export function AddMinerModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      miner_name: "",
       free: 0,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (cart.length === 0) return null;
+  const debouncedSearch = useDebounce(miner_name, 500);
+  const searchedMiners = useFetchMinersSearch({ searchName: debouncedSearch });
 
-    const { miner_name, free } = values;
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (cart.length === 0 && miner_name === "") return null;
+
+    const { free } = values;
     const created_at = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -121,12 +126,65 @@ export function AddMinerModal() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col gap-2"
             >
-              <FormField
+              <div className="grid w-full max-w-sm items-center gap-1.5 relative">
+                <Label>Name</Label>
+                <Input
+                  type="text"
+                  placeholder="Name of Miner"
+                  value={miner_name}
+                  onChange={(e) => setMiner_name(e.target.value)}
+                />
+                {searchedMiners?.data !== undefined && (
+                  <div className="absolute top-full left-0 bg-white shadow -mt-1 z-[10] w-full">
+                    {searchedMiners?.isLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      </>
+                    ) : (
+                      <>
+                        {searchedMiners?.data.length === 0 ? (
+                          <></>
+                        ) : (
+                          <>
+                            {searchedMiners?.data.length === 1 &&
+                            searchedMiners?.data[0].miner_name ===
+                              miner_name ? (
+                              <></>
+                            ) : (
+                              <>
+                                <ScrollArea className="h-32 w-full rounded-md border">
+                                  <div className="p-4">
+                                    {searchedMiners?.data?.map((miner) => (
+                                      <>
+                                        <div
+                                          onClick={() =>
+                                            setMiner_name(miner.miner_name)
+                                          }
+                                          key={miner.id}
+                                          className="text-sm"
+                                        >
+                                          {miner.miner_name}
+                                        </div>
+                                        <Separator className="my-2" />
+                                      </>
+                                    ))}
+                                  </div>
+                                </ScrollArea>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* <FormField
                 control={form.control}
                 name="miner_name"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <div className="grid w-full max-w-sm items-center gap-1.5 relative">
                       <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input
@@ -135,11 +193,35 @@ export function AddMinerModal() {
                           {...field}
                         />
                       </FormControl>
+                      {searchedMiners?.data !== undefined && (
+                        <div className="absolute top-full left-0 bg-white shadow -mt-1 z-[10] w-full">
+                          {searchedMiners?.isLoading ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                            </>
+                          ) : (
+                            <>
+                              <ScrollArea className="h-32 w-full rounded-md border">
+                                <div className="p-4">
+                                  {searchedMiners?.data?.map((miner) => (
+                                    <>
+                                      <div key={miner.id} className="text-sm">
+                                        {miner.miner_name}
+                                      </div>
+                                      <Separator className="my-2" />
+                                    </>
+                                  ))}
+                                </div>
+                              </ScrollArea>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="free"
