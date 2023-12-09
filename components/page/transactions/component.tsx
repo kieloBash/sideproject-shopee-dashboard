@@ -123,13 +123,18 @@ const TransactionComponent = () => {
         <>
           {miners.data && miners.data.length > 0 ? (
             <>
-              <ScrollArea className="w-full h-[calc(100vh-7.4rem)] mt-2">
+              <ScrollArea className="px-2 w-full h-[calc(100vh-10rem)] mt-2">
                 <div className="w-full py-2 h-full flex flex-col gap-1.5">
                   {miners?.data?.map((miner) => {
                     return <MinerCard miner={miner} key={miner.id} />;
                   })}
                 </div>
               </ScrollArea>
+              <div className="w-full flex justify-end items-center mt-1">
+                <span className="text-sm text-foreground">
+                  {miners.data.length} results
+                </span>
+              </div>
             </>
           ) : (
             <div className="text-center mt-4 w-full h-full justify-center items-center">

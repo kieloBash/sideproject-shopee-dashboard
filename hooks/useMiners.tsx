@@ -21,12 +21,33 @@ const useFetchMiners = ({
       if (filter !== "All") {
         supabaseQuery = supabaseQuery.filter("status", "eq", filter);
       }
-      // Add filter based on createdAt Date
-      supabaseQuery = supabaseQuery.filter(
-        "created_at",
-        "gte",
-        date.toISOString()
+      // Filter for timestamps on the specified date (UTC)
+      const startDate = new Date(
+        Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          0,
+          0,
+          0,
+          0
+        )
       );
+      const endDate = new Date(
+        Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23,
+          59,
+          59,
+          999
+        )
+      );
+
+      supabaseQuery = supabaseQuery
+        .filter("created_at", "gte", startDate.toISOString())
+        .filter("created_at", "lte", endDate.toISOString());
 
       const { data: miners, error } = await supabaseQuery;
 

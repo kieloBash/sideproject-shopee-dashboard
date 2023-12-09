@@ -38,8 +38,8 @@ import dayjs from "dayjs";
 export function MinerCard({ miner }: { miner: Miner }) {
   return (
     <Card>
-      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
-        <div className="space-y-1">
+      <CardHeader className="grid grid-cols-3 items-start gap-4 space-y-0">
+        <div className="space-y-1 col-span-1">
           <CardTitle>{miner.miner_name}</CardTitle>
           <CardDescription>
             <div className="flex items-center">
@@ -52,42 +52,44 @@ export function MinerCard({ miner }: { miner: Miner }) {
             </div>
           </CardDescription>
         </div>
-        <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
-          <Button
-            variant="secondary"
-            className={`${
-              miner.status === "Confirmed" && "text-main-default"
-            } px-2 shadow-none`}
-          >
-            <Check className={`mr-2 h-4 w-4`} />
-            Mined
-          </Button>
-          <Separator orientation="vertical" className="h-[20px]" />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="px-2 shadow-none">
-                <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              alignOffset={-5}
-              className="w-[200px]"
-              forceMount
+        <div className="col-span-2 flex justify-end items-center">
+          <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
+            <Button
+              variant="secondary"
+              className={`${
+                miner.status === "Confirmed" && "text-main-default"
+              } px-2 shadow-none`}
             >
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <PenBox className="mr-2 h-4 w-4" /> Edit Miner
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <ShoppingBag className="mr-2 h-4 w-4" /> View Cart
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MinusCircle className="mr-2 h-4 w-4" /> Delete Miner
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <Check className={`mr-2 h-4 w-4`} />
+              Mined
+            </Button>
+            <Separator orientation="vertical" className="h-[20px]" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" className="px-2 shadow-none">
+                  <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                alignOffset={-5}
+                className="w-[200px]"
+                forceMount
+              >
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <PenBox className="mr-2 h-4 w-4" /> Edit Miner
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ShoppingBag className="mr-2 h-4 w-4" /> View Cart
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <MinusCircle className="mr-2 h-4 w-4" /> Delete Miner
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
