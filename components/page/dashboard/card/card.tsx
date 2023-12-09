@@ -46,11 +46,6 @@ export function CardLists() {
     }
   });
 
-  console.log("Total Amount (Pending):", totalAmountByStatus["Pending"]);
-  console.log("Total Amount (Confirmed):", totalAmountByStatus["Confirmed"]);
-  console.log("Total Items (Pending):", totalItemsByStatus["Pending"]);
-  console.log("Total Items (Confirmed):", totalItemsByStatus["Confirmed"]);
-
   return (
     <div className="flex flex-col gap-4">
       <div className="w-full flex gap-2 justify-start items-center">
@@ -90,9 +85,7 @@ export function CardLists() {
       <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Confirmed
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -117,7 +110,7 @@ export function CardLists() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Pending</CardTitle>
+            <CardTitle className="text-sm font-medium">Pending</CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
