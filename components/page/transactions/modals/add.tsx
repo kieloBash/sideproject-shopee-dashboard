@@ -16,14 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 // FORM
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,14 +36,12 @@ const formSchema = z.object({
     message: "Miner Name must be at least 1 characters.",
   }),
   free: z.number().gte(0),
-  dob: z.date({
-    required_error: "A date of birth is required.",
-  }),
 });
 
 export function AddMinerModal() {
   const [cart, setCart] = useState<number[]>([]);
   const [item, setItem] = useState<number>(0);
+  const [date, setDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -63,20 +53,18 @@ export function AddMinerModal() {
     defaultValues: {
       miner_name: "",
       free: 0,
-      dob: new Date(),
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (cart.length === 0) return null;
 
-    const { miner_name, free, dob } = values;
+    const { miner_name, free } = values;
     const created_at = new Date(
-      dob.getFullYear(),
-      dob.getMonth(),
-      dob.getDate() + 1
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() + 1
     );
-    console.log(created_at.toString());
     setIsLoading(true);
 
     const res = await supabase
@@ -175,70 +163,41 @@ export function AddMinerModal() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="dob"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Mined Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Label>Mined Date</Label>
+                <input
+                  className="p-2 border rounded-md text-sm outline-none"
+                  type="date"
+                  value={date.toISOString().split("T")[0]}
+                  onChange={(e) => setDate(new Date(e.target.value))}
+                />
+              </div>
               <div className="grid grid-cols-3 gap-2 mt-4">
                 <div className="col-span-1 flex flex-col gap-1.5">
                   <div className="flex flex-col p-2 border rounded-md gap-1">
                     <Label htmlFor="cart">Price</Label>
                     <input
                       type="number"
-                      id="cart"
+                      id="price"
                       placeholder="Price"
                       className="outline-none border-b pl-2 py-1"
                       value={item}
                       onChange={(e) => setItem(Number(e.target.value))}
                     />
                   </div>
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setCart((prev) => [item, ...prev]);
-                      setItem(0);
-                    }}
-                    className="mt-2"
-                  >
-                    <Plus />
-                  </Button>
+                  <div className="flex w-full mt-2">
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setCart((prev) => [item, ...prev]);
+                        setItem(0);
+                      }}
+                      className=""
+                    >
+                      <Plus />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="w-full col-span-2 flex justify-center items-center">
