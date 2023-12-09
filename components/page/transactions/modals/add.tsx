@@ -108,7 +108,7 @@ export function AddMinerModal() {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="fixed z-[10] left-1/2 -translate-x-1/2 bottom-4 w-12 h-12 shadow p-1 rounded-full">
+          <Button className="fixed z-[10] right-1/2 translate-x-1/2 bottom-4 w-12 h-12 shadow p-2 rounded-full mr-8">
             <Plus className="w-full h-full" />
           </Button>
         </DialogTrigger>

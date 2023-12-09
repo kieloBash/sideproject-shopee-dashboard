@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, Menu, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -32,6 +32,7 @@ import { ViewMinersModal } from "./modals/view";
 import { DeleteMinerModal } from "./modals/delete";
 import { AddMinerModal } from "./modals/add";
 import { EditMinerModal } from "./modals/edit";
+import { ListMinerModal } from "./modals/lists";
 
 export type StatusMinerFilterType = "All" | "Pending" | "Confirmed";
 const TransactionComponent = () => {
@@ -43,29 +44,13 @@ const TransactionComponent = () => {
   const miners = useFetchMiners({ filter, date });
   const uniqueDates = useUniqueDates();
 
-  // useEffect(() => {
-  //   if (uniqueDates.data.length > 0) {
-  //     const lastIndex = uniqueDates.data
-  //       .slice()
-  //       .reverse()
-  //       .findIndex((item) => true);
-  //     const lastItem =
-  //       uniqueDates.data[uniqueDates.data.length - 1 - lastIndex];
-
-  //     // Assuming lastItem is a string in the format 'YYYY-MM-DD', convert it to a Date object
-  //     const dateObject = new Date(lastItem);
-
-  //     // Update the state with the new date
-  //     setDate(dateObject);
-  //   }
-  // }, [uniqueDates.data]);
-
   return (
     <>
       {selectedMiner && <ViewMinersModal />}
       {selectedMiner && <DeleteMinerModal />}
       {selectedMiner && <EditMinerModal />}
       <AddMinerModal />
+      <ListMinerModal date={date}/>
       <div className="w-full flex gap-2 justify-start items-center">
         <Popover>
           <PopoverTrigger asChild>
