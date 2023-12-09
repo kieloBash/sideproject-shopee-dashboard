@@ -58,7 +58,7 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
       password,
       redirect: false,
     });
-    
+
     if (res?.ok && res) {
       toast({
         title: "Successfully Logged In",
@@ -89,7 +89,7 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input type="email" placeholder="email" {...field} />
+                        <Input type="email" placeholder="Email" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,7 +105,7 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="password"
+                          placeholder="Password"
                           {...field}
                         />
                       </FormControl>
