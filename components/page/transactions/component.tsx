@@ -42,22 +42,22 @@ const TransactionComponent = () => {
   const miners = useFetchMiners({ filter, date });
   const uniqueDates = useUniqueDates();
 
-  useEffect(() => {
-    if (uniqueDates.data.length > 0) {
-      const lastIndex = uniqueDates.data
-        .slice()
-        .reverse()
-        .findIndex((item) => true);
-      const lastItem =
-        uniqueDates.data[uniqueDates.data.length - 1 - lastIndex];
+  // useEffect(() => {
+  //   if (uniqueDates.data.length > 0) {
+  //     const lastIndex = uniqueDates.data
+  //       .slice()
+  //       .reverse()
+  //       .findIndex((item) => true);
+  //     const lastItem =
+  //       uniqueDates.data[uniqueDates.data.length - 1 - lastIndex];
 
-      // Assuming lastItem is a string in the format 'YYYY-MM-DD', convert it to a Date object
-      const dateObject = new Date(lastItem);
+  //     // Assuming lastItem is a string in the format 'YYYY-MM-DD', convert it to a Date object
+  //     const dateObject = new Date(lastItem);
 
-      // Update the state with the new date
-      setDate(dateObject);
-    }
-  }, [uniqueDates.data]);
+  //     // Update the state with the new date
+  //     setDate(dateObject);
+  //   }
+  // }, [uniqueDates.data]);
 
   return (
     <>

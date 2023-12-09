@@ -66,7 +66,9 @@ const Sidebar = () => {
               </Link>
             );
           })}
-          <li className={`py-2 text-center mt-10`}>
+          <li
+            className={`py-2 text-center mt-10 flex justify-center items-center`}
+          >
             <Button
               variant={"ghostBtn"}
               className="flex justify-center items-center gap-2 group hover:text-slate-300"
