@@ -75,7 +75,7 @@ export function MinerCard({ miner }: { miner: Miner }) {
         queryKey: [`miners`],
       });
       toast({
-        title: `Change status to ${newStatus} for miner ${miner.miner_name}`,
+        title: `${newStatus} miner ${miner.miner_name}`,
         variant: `${newStatus === "Confirmed" ? "success" : "destructive"}`,
       });
       setIsLoading(false);

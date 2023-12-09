@@ -85,9 +85,7 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
       } Items) | (${data.totalFree} Free)\nItems: ${data.totalCart.join(
         " + "
       )}\nTotal: ₱${total}\nDate Mined: ${tempDate.toDateString()}
-      \n${link}
-
-      `;
+      \n${link}`;
 
       await navigator.clipboard.writeText(textToCopy);
     } catch (error) {
