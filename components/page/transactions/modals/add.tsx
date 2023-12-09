@@ -16,6 +16,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // FORM
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,12 +37,16 @@ import { Separator } from "@/components/ui/separator";
 import supabase from "@/utils/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 
 const formSchema = z.object({
   miner_name: z.string().min(1, {
     message: "Miner Name must be at least 1 characters.",
   }),
   free: z.number().gte(0),
+  dob: z.date({
+    required_error: "A date of birth is required.",
+  }),
 });
 
 export function AddMinerModal() {
@@ -51,18 +63,25 @@ export function AddMinerModal() {
     defaultValues: {
       miner_name: "",
       free: 0,
+      dob: new Date(),
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (cart.length === 0) return null;
 
-    const { miner_name, free } = values;
+    const { miner_name, free, dob } = values;
+    const created_at = new Date(
+      dob.getFullYear(),
+      dob.getMonth(),
+      dob.getDate() + 1
+    );
+    console.log(created_at.toString());
     setIsLoading(true);
 
     const res = await supabase
       .from("invoice")
-      .insert({ miner_name, free, cart })
+      .insert({ miner_name, free, cart, created_at })
       .select("*")
       .single();
 
@@ -152,6 +171,47 @@ export function AddMinerModal() {
                       </FormControl>
                     </div>
 
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Mined Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
