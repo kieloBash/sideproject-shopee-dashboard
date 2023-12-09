@@ -35,14 +35,51 @@ import {
 import { Miner } from "@/lib/interfaces";
 import dayjs from "dayjs";
 import { useMinerContext } from "@/contexts/MinerProvider";
+import supabase from "@/utils/supabase";
+import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function MinerCard({ miner }: { miner: Miner }) {
   const { setSelectedMiner, setToggleView, setToggleDelete } =
     useMinerContext();
 
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+
   function getTotalOfCart() {
     const total = miner.cart.reduce((acc, item) => acc + item, 0);
     return total;
+  }
+
+  async function updateStatus() {
+    if (!miner) return null;
+    setIsLoading(true);
+    const newStatus = miner.status === "Pending" ? "Confirmed" : "Pending";
+
+    const currDate = newStatus === "Confirmed" ? new Date() : null;
+
+    const res = await supabase
+      .from("invoice")
+      .update({
+        ...miner,
+        ["status"]: newStatus,
+        ["confirm_date"]: currDate,
+      })
+      .eq("id", miner.id);
+
+    if (res.error) console.log(res);
+    else {
+      queryClient.invalidateQueries({
+        queryKey: [`miners`],
+      });
+      toast({
+        title: `Change status to ${newStatus} for miner ${miner.miner_name}`,
+        variant: `${newStatus === "Confirmed" ? "success" : "destructive"}`,
+      });
+      setIsLoading(false);
+    }
   }
   return (
     <Card>
@@ -54,7 +91,7 @@ export function MinerCard({ miner }: { miner: Miner }) {
               <ShoppingBag className="mr-1 h-3 w-3" />
               {miner.cart.length} items
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center w-60">
               <BadgeCheck className="mr-1 h-3 w-3" />
               {miner.free} free
             </div>
@@ -67,6 +104,8 @@ export function MinerCard({ miner }: { miner: Miner }) {
         <div className="col-span-2 flex justify-end items-center">
           <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
             <Button
+              disabled={isLoading}
+              onClick={updateStatus}
               variant="secondary"
               className={`${
                 miner.status === "Confirmed" && "text-main-default"
@@ -125,20 +164,20 @@ export function MinerCard({ miner }: { miner: Miner }) {
                   : "fill-yellow-400 text-yellow-400"
               }`}
             />
-            {miner.status}
+            {miner.status === "Confirmed" ? "Done" : "Pending"}
           </div>
-          <div className="flex col-span-2 gap-6">
+          <div className="flex col-span-2 gap-2">
             <div className="flex justify-start items-center gap-1">
               <Calendar className="h-3 w-3" />
               <span className="">
-                {dayjs(new Date(miner.created_at)).format("MMM DD")}
+                {dayjs(new Date(miner.created_at)).format("MMM D")}
               </span>
             </div>
             <div className="flex items-center">
               <CalendarCheck className="mr-1 h-3 w-3" />
               <span className="">
                 {miner.confirm_date
-                  ? dayjs(new Date(miner.confirm_date)).format("MMM DD")
+                  ? dayjs(new Date(miner.confirm_date)).format("MMM D")
                   : "N/A"}
               </span>
             </div>

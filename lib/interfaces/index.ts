@@ -2,7 +2,7 @@ export interface Miner {
   id: number;
   created_at: Date;
   miner_name: string;
-  cart: [number];
+  cart: number[];
   status: "Pending" | "Confirmed";
   free: number;
   confirm_date: Date | null;
