@@ -65,8 +65,6 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
       return accumulator;
     }, []);
 
-  console.log(combinedMiners);
-
   const handleCopyClick = async (data: CombinedMiner) => {
     try {
       let total = 0;

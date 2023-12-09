@@ -66,18 +66,18 @@ const Sidebar = () => {
               </Link>
             );
           })}
-          <li
-            className={`py-2 text-center mt-10 flex justify-center items-center`}
-          >
-            <Button
-              variant={"ghostBtn"}
-              className="flex justify-center items-center gap-2 group hover:text-slate-300"
-              onClick={() => signOut({ callbackUrl: "/" })}
-            >
-              <span className="text-2xl">Sign Out</span>
-              <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
-            </Button>
-          </li>
+          <div className="w-full flex justify-center items-center mt-10">
+            <TooltipButton tooltip="Sign Out">
+              <Button
+                variant={"ghostBtn"}
+                className="flex justify-center items-center gap-2 group hover:text-slate-300"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                <span className="text-2xl uppercase">Sign Out</span>
+                <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
+              </Button>
+            </TooltipButton>
+          </div>
         </ul>
       </section>
 
@@ -115,16 +115,18 @@ const Sidebar = () => {
             );
           })}
         </ul>
-        <TooltipButton tooltip="Sign Out">
-          <Button
-            variant={"ghostBtn"}
-            className="flex justify-center items-center gap-2 group hover:text-slate-300"
-            onClick={() => signOut({ callbackUrl: "/" })}
-          >
-            <span className="">Sign out</span>
-            <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
-          </Button>
-        </TooltipButton>
+        <div className="w-full flex justify-center items-center">
+          <TooltipButton tooltip="Sign Out">
+            <Button
+              variant={"ghostBtn"}
+              className="flex justify-center items-center gap-2 group hover:text-slate-300"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              <span className="uppercase text-xl">Sign Out</span>
+              <LogOut className="w-full h-full transition text-white group-hover:text-slate-300" />
+            </Button>
+          </TooltipButton>
+        </div>
       </section>
     </>
   );
