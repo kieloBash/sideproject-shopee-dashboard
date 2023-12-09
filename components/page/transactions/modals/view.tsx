@@ -21,7 +21,13 @@ export function ViewMinersModal() {
   const { toggleView, setToggleView, setSelectedMiner, selectedMiner } =
     useMinerContext();
   return (
-    <Dialog open={toggleView} onOpenChange={setToggleView}>
+    <Dialog
+      open={toggleView}
+      onOpenChange={(e) => {
+        setToggleView(e);
+        setSelectedMiner(undefined);
+      }}
+    >
       <DialogContent className="max-w-[320px] sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Miner Cart</DialogTitle>

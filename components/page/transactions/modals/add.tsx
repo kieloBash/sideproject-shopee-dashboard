@@ -164,7 +164,7 @@ export function AddMinerModal() {
                       type="number"
                       id="cart"
                       placeholder="Price"
-                      className="border-none outline-none"
+                      className="outline-none border-b pl-2 py-1"
                       value={item}
                       onChange={(e) => setItem(Number(e.target.value))}
                     />
@@ -175,6 +175,7 @@ export function AddMinerModal() {
                       setCart((prev) => [item, ...prev]);
                       setItem(0);
                     }}
+                    className="mt-2"
                   >
                     <Plus />
                   </Button>

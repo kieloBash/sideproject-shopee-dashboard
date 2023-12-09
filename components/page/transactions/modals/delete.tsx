@@ -48,7 +48,13 @@ export function DeleteMinerModal() {
     }
   }
   return (
-    <AlertDialog open={toggleDelete} onOpenChange={setToggleDelete}>
+    <AlertDialog
+      open={toggleDelete}
+      onOpenChange={(e) => {
+        setToggleDelete(e);
+        setSelectedMiner(undefined);
+      }}
+    >
       <AlertDialogContent className="max-w-[320px]">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
