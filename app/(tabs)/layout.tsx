@@ -1,3 +1,5 @@
+import Sidebar from "@/components/global/Sidebar";
+import SidebarProvider from "@/contexts/SidebarProvider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,5 +12,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div className="w-full min-h-screen relative">
+      <SidebarProvider>
+        <Sidebar />
+        {children}
+      </SidebarProvider>
+    </div>
+  );
 }

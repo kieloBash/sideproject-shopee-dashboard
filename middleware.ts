@@ -9,11 +9,11 @@ export default withAuth(
     const { token } = req.nextauth;
 
     const user = token?.user as UserType;
-    const returnURL = `${process.env.NEXTAUTH_URL}/dashboard`;
+    const returnURL = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
 
-    if (pathname.startsWith("/transactions") && user.role === "user") {
-      return NextResponse.redirect(returnURL);
-    }
+    // if (pathname.startsWith("/promo") && user.role === "user") {
+    //   return NextResponse.redirect(returnURL);
+    // }
   },
   {
     callbacks: {
@@ -26,5 +26,10 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/settings/:path*", "/transactions/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/promo/:path*",
+    "/settings/:path*",
+    "/transactions/:path*",
+  ],
 };
