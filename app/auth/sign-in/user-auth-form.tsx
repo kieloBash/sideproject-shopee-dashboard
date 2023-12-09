@@ -29,6 +29,8 @@ import {
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+import { useToast } from "@/components/ui/use-toast";
+
 // BACKEND
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -36,6 +38,7 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,10 +58,21 @@ export function UserAuthFormLogin({ className, ...props }: UserAuthFormProps) {
       password,
       redirect: false,
     });
-    console.log(res);
-    if (res) {
-      console.log("welcome");
+    
+    if (res?.ok && res) {
+      toast({
+        title: "Successfully Logged In",
+        description: `Welcome, ${email}`,
+        variant: "success",
+      });
       router.push("/dashboard");
+    } else {
+      toast({
+        title: "Invalid Credentials",
+        description: `Please try again`,
+        variant: "destructive",
+      });
+      setIsLoading(false);
     }
   }
 
