@@ -29,6 +29,7 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
     miner_name: string;
     created_at: Date;
     totalCart: number[];
+    id: string;
   };
 
   const combinedInvoice: CombinedInvoices[] = (list?.data || [])
@@ -60,6 +61,7 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
           miner_name: currentInvoice?.miner?.name || "",
           created_at: currentInvoice.created_at,
           totalCart: currentInvoice.cart.slice(), // Clone the array
+          id: currentInvoice.miner_id,
         };
         accumulator.push(newCombinedMiner);
       }
@@ -87,7 +89,10 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
       } Items) | (${data.totalFree} Free)\nItems: ${data.totalCart.join(
         " + "
       )}\nTotal: ₱${total}\nDate Mined: ${tempDate.toDateString()}
-      \n${link}`;
+      \n${link}
+      \n To view your reward points visit this site or scan the QR code: https://sideproject-shopee-rewards.vercel.app/${
+        data.id
+      }`;
 
       await navigator.clipboard.writeText(textToCopy);
     } catch (error) {
