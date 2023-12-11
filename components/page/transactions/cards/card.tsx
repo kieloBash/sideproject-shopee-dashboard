@@ -68,6 +68,30 @@ export function MinerCard({ invoice }: { invoice: InvoiceType }) {
       })
       .eq("id", invoice.id);
 
+    const miner = await supabase
+      .from("miner")
+      .select("*")
+      .eq("id", invoice.miner_id)
+      .single();
+
+    let newMiner;
+
+    if (newStatus === "Confirmed") {
+      newMiner = await supabase
+        .from("miner")
+        .update({
+          ["rewardpts"]: miner.data.rewardpts + 1,
+        })
+        .eq("id", miner.data.id);
+    } else {
+      newMiner = await supabase
+        .from("miner")
+        .update({
+          ["rewardpts"]: miner.data.rewardpts - 1,
+        })
+        .eq("id", miner.data.id);
+    }
+
     if (res.error) console.log(res);
     else {
       queryClient.invalidateQueries({

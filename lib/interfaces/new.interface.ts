@@ -13,4 +13,6 @@ export interface MinerType {
   id: string;
   name: string;
   rewardpts: number;
+  liked: boolean;
+  shared: boolean;
 }

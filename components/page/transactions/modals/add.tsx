@@ -117,6 +117,9 @@ export function AddMinerModal() {
       queryClient.invalidateQueries({
         queryKey: [`miners-search`],
       });
+      queryClient.invalidateQueries({
+        queryKey: [`miners`],
+      });
       toast({
         title: "Successfully Inserted",
         description: `Mined: ${cart.length}`,
