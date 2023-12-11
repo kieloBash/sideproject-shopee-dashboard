@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import {
   ArrowUpRightSquareIcon,
   Loader2,
+  QrCode,
   Search,
   ThumbsUp,
 } from "lucide-react";
@@ -18,11 +19,15 @@ import { MinerType } from "@/lib/interfaces/new.interface";
 import supabase from "@/utils/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import QRCode from "qrcode.react";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 const PromoMain = () => {
   const [stringVal, setStringVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+
+  const [selectedMiner, setSelectedMiner] = useState<MinerType>();
 
   const debouncedSearch = useDebounce(stringVal, 500);
   const miners = useFetchMiners({ searchName: debouncedSearch, limit: 5 });
@@ -76,6 +81,24 @@ const PromoMain = () => {
 
   return (
     <>
+      {selectedMiner && (
+        <section
+          className="fixed z-[100] inset-0 bg-white flex-col flex justify-center items-center"
+          onClick={() => setSelectedMiner(undefined)}
+        >
+          <Label className="mb-2 text-main-default text-xl font-bold">Rewards QR Link</Label>
+          <div className="">
+            <QRCode
+              size={250}
+              bgColor={"#ffffff"}
+              fgColor={'#ca5371'}
+              value={`https://sideproject-shopee-rewards.vercel.app/${
+                selectedMiner?.id || ""
+              }`}
+            />
+          </div>
+        </section>
+      )}
       <div className="flex items-center px-3 border-b">
         <Search className="w-4 h-4 mr-2 opacity-50 shrink-0" />
         <input
@@ -126,44 +149,58 @@ const PromoMain = () => {
                           })}
                       </div>
                     </div>
-                    <div className="w-full flex justify-end items-center gap-2 mt-1">
+                    <div className="w-full flex justify-between items-center gap-2 mt-1">
                       <Button
                         type="button"
-                        onClick={() => handleLiked(miner)}
-                        className="text-xs"
+                        onClick={() => {
+                          setSelectedMiner(miner);
+                        }}
+                        className="text-xs px-2"
                         size={"sm"}
-                        variant={!miner.liked ? "default" : "outline"}
+                        variant={"default"}
                         disabled={isLoading}
                       >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          </>
-                        ) : (
-                          <>
-                            <ThumbsUp className="w-3 h-3 mr-2" /> Liked
-                          </>
-                        )}
+                        <QrCode className="w-5 h-5" />
                       </Button>
-                      <Button
-                        type="button"
-                        onClick={() => handleShared(miner)}
-                        className="text-xs"
-                        size={"sm"}
-                        variant={!miner.shared ? "default" : "outline"}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          </>
-                        ) : (
-                          <>
-                            <ArrowUpRightSquareIcon className="w-3 h-3 mr-2" />{" "}
-                            Shared
-                          </>
-                        )}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          onClick={() => handleLiked(miner)}
+                          className="text-xs"
+                          size={"sm"}
+                          variant={!miner.liked ? "default" : "outline"}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            </>
+                          ) : (
+                            <>
+                              <ThumbsUp className="w-3 h-3 mr-2" /> Liked
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => handleShared(miner)}
+                          className="text-xs"
+                          size={"sm"}
+                          variant={!miner.shared ? "default" : "outline"}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            </>
+                          ) : (
+                            <>
+                              <ArrowUpRightSquareIcon className="w-3 h-3 mr-2" />{" "}
+                              Shared
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );

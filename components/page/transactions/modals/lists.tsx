@@ -166,10 +166,11 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
             className="fixed z-[100] inset-0 bg-white flex-col flex justify-center items-center"
             onClick={() => setSelectedInvoice(undefined)}
           >
-            <Label className="mb-2">Rewards QR Link</Label>
+            <Label className="mb-2 font-medium text-main-default">Rewards QR Link</Label>
             <div className="">
               <QRCode
                 size={250}
+                fgColor={"#ca5371"}
                 value={`https://sideproject-shopee-rewards.vercel.app/${
                   selectedInvoice?.id || ""
                 }`}
