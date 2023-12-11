@@ -17,6 +17,9 @@ import { Separator } from "@/components/ui/separator";
 
 import { useToast } from "@/components/ui/use-toast";
 import { InvoiceType } from "@/lib/interfaces/new.interface";
+import QRCode from "qrcode.react";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
 
 export function ListMinerModal({ date }: { date: Date | undefined }) {
   const list = useFetchMinersList({ date });
@@ -31,6 +34,8 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
     totalCart: number[];
     id: string;
   };
+
+  const [selectedInvoice, setSelectedInvoice] = useState<CombinedInvoices>();
 
   const combinedInvoice: CombinedInvoices[] = (list?.data || [])
     .filter((invoice) => invoice.status === "Confirmed") // Filter miners with status "Confirmed"
@@ -142,7 +147,10 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
                       type="button"
                       variant={"ghostBtn"}
                       className="w-5 h-5 p-0"
-                      onClick={() => handleCopyClick(invoice)}
+                      onClick={() => {
+                        setSelectedInvoice(invoice);
+                        handleCopyClick(invoice);
+                      }}
                     >
                       <Copy className="w-full h-full" />
                     </Button>
@@ -153,6 +161,22 @@ export function ListMinerModal({ date }: { date: Date | undefined }) {
             ))}
           </div>
         </ScrollArea>
+        {selectedInvoice && (
+          <section
+            className="fixed z-[100] inset-0 bg-white flex-col flex justify-center items-center"
+            onClick={() => setSelectedInvoice(undefined)}
+          >
+            <Label className="mb-2">Rewards QR Link</Label>
+            <div className="">
+              <QRCode
+                size={250}
+                value={`https://sideproject-shopee-rewards.vercel.app/${
+                  selectedInvoice?.id || ""
+                }`}
+              />
+            </div>
+          </section>
+        )}
       </DialogContent>
     </Dialog>
   );
