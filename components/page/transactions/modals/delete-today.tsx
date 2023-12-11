@@ -61,7 +61,7 @@ export function DeleteTodayModal() {
       );
 
       let { data: error } = await supabase
-        .from("invoice")
+        .from("invoices_transaction")
         .delete()
         .filter("created_at", "gte", startDate.toISOString())
         .filter("created_at", "lte", endDate.toISOString());
@@ -69,10 +69,10 @@ export function DeleteTodayModal() {
       if (error) return;
       else {
         queryClient.invalidateQueries({
-          queryKey: [`miners`],
+          queryKey: [`invoices`],
         });
         queryClient.invalidateQueries({
-          queryKey: [`miner-dates`],
+          queryKey: [`invoices-dates`],
         });
       }
     } catch (error) {

@@ -27,28 +27,31 @@ import {
 } from "@/components/ui/popover";
 import useUniqueDates from "@/hooks/useUniqueDates";
 import dayjs from "dayjs";
-import { useMinerContext } from "@/contexts/MinerProvider";
 import { ViewMinersModal } from "./modals/view";
 import { DeleteMinerModal } from "./modals/delete";
 import { AddMinerModal } from "./modals/add";
-import { EditMinerModal } from "./modals/edit";
+// import { EditMinerModal } from "./modals/edit";
 import { ListMinerModal } from "./modals/lists";
+import useFetchInvoices from "@/hooks/useInvoices";
+import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 
 export type StatusMinerFilterType = "All" | "Pending" | "Confirmed";
 const TransactionComponent = () => {
   const [filter, setFilter] = useState<StatusMinerFilterType>("All");
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
-  const { selectedMiner } = useMinerContext();
+  const { selectedInvoice } = useInvoiceContext();
 
   const miners = useFetchMiners({ filter, date });
   const uniqueDates = useUniqueDates();
+  const invoices = useFetchInvoices({ filter, date });
+  console.log(invoices);
 
   return (
     <>
-      {selectedMiner && <ViewMinersModal />}
-      {selectedMiner && <DeleteMinerModal />}
-      {selectedMiner && <EditMinerModal />}
+      {selectedInvoice && <ViewMinersModal />}
+      {selectedInvoice && <DeleteMinerModal />}
+      {/* {selectedInvoice && <EditMinerModal />} */}
       <AddMinerModal />
       <ListMinerModal date={date} />
       <div className="w-full flex gap-2 justify-start items-center">
@@ -101,7 +104,7 @@ const TransactionComponent = () => {
           </SelectContent>
         </Select>
       </div>
-      {miners.isLoading ? (
+      {invoices.isLoading ? (
         <div className="flex flex-col gap-1.5 py-2">
           {Array(3)
             .fill([])
@@ -116,18 +119,18 @@ const TransactionComponent = () => {
         </div>
       ) : (
         <>
-          {miners.data && miners.data.length > 0 ? (
+          {invoices.data && invoices.data.length > 0 ? (
             <>
               <ScrollArea className="px-2 w-full h-[calc(100vh-9.6rem)] mt-2">
                 <div className="w-full py-2 h-full flex flex-col gap-1.5">
-                  {miners?.data?.map((miner) => {
-                    return <MinerCard miner={miner} key={miner.id} />;
+                  {invoices?.data?.map((invoice) => {
+                    return <MinerCard invoice={invoice} key={invoice.id} />;
                   })}
                 </div>
               </ScrollArea>
               <div className="w-full flex justify-end items-center mt-2">
                 <span className="text-sm text-foreground">
-                  {miners.data.length} results
+                  {invoices.data.length} results
                 </span>
               </div>
             </>

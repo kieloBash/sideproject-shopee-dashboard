@@ -1,10 +1,10 @@
 "use client";
-import { Miner } from "@/lib/interfaces";
+import { InvoiceType } from "@/lib/interfaces/new.interface";
 import * as React from "react";
 
-export type MinerContextType = {
-  selectedMiner: Miner | undefined;
-  setSelectedMiner: (temp: Miner | undefined) => void;
+export type InvoiceContextType = {
+  selectedInvoice: InvoiceType | undefined;
+  setSelectedInvoice: (temp: InvoiceType | undefined) => void;
 
   // toggleAdd: boolean;
   // setToggleAdd: (temp: boolean) => void;
@@ -16,9 +16,9 @@ export type MinerContextType = {
   setToggleDelete: (temp: boolean) => void;
 };
 
-export const MinerContext = React.createContext<MinerContextType>({
-  selectedMiner: undefined,
-  setSelectedMiner: (temp: Miner | undefined) => {},
+export const InvoiceContext = React.createContext<InvoiceContextType>({
+  selectedInvoice: undefined,
+  setSelectedInvoice: (temp: InvoiceType | undefined) => {},
 
   // toggleAdd: false,
   // setToggleAdd: (temp: boolean) => {},
@@ -30,10 +30,12 @@ export const MinerContext = React.createContext<MinerContextType>({
   setToggleDelete: (temp: boolean) => {},
 });
 
-export const useMinerContext = () => React.useContext(MinerContext);
+export const useInvoiceContext = () => React.useContext(InvoiceContext);
 
-const MinerProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedMiner, setSelectedMiner] = React.useState<Miner | undefined>();
+const InvoiceProvider = ({ children }: { children: React.ReactNode }) => {
+  const [selectedInvoice, setSelectedInvoice] = React.useState<
+    InvoiceType | undefined
+  >();
 
   // const [toggleAdd, setToggleAdd] = React.useState<boolean>(false);
   const [toggleView, setToggleView] = React.useState<boolean>(false);
@@ -41,10 +43,10 @@ const MinerProvider = ({ children }: { children: React.ReactNode }) => {
   const [toggleDelete, setToggleDelete] = React.useState<boolean>(false);
 
   return (
-    <MinerContext.Provider
+    <InvoiceContext.Provider
       value={{
-        selectedMiner,
-        setSelectedMiner,
+        selectedInvoice,
+        setSelectedInvoice,
         // toggleAdd,
         toggleView,
         toggleEdit,
@@ -56,8 +58,8 @@ const MinerProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
-    </MinerContext.Provider>
+    </InvoiceContext.Provider>
   );
 };
 
-export default MinerProvider;
+export default InvoiceProvider;

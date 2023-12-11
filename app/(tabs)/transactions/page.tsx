@@ -1,6 +1,6 @@
 import TransactionComponent from "@/components/page/transactions/component";
 import { DeleteTodayModal } from "@/components/page/transactions/modals/delete-today";
-import MinerProvider from "@/contexts/MinerProvider";
+import MinerProvider from "@/contexts/InvoiceProvider";
 import React from "react";
 
 const TransactionsPage = () => {

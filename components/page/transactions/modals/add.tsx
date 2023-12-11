@@ -29,14 +29,10 @@ import { Separator } from "@/components/ui/separator";
 import supabase from "@/utils/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import useDebounce from "@/hooks/useDebounce";
 import useFetchMinersSearch from "@/hooks/useMinersSearch";
 
 const formSchema = z.object({
-  // miner_name: z.string().min(1, {
-  //   message: "Miner Name must be at least 1 characters.",
-  // }),
   free: z.number().gte(0),
 });
 
@@ -72,21 +68,54 @@ export function AddMinerModal() {
     );
     setIsLoading(true);
 
-    const res = await supabase
-      .from("invoice")
-      .insert({ miner_name, free, cart, created_at })
+    // const res = await supabase
+    //   .from("invoice")
+    //   .insert({ miner_name, free, cart, created_at })
+    //   .select("*")
+    //   .single();
+
+    let miner;
+
+    const existingMiner = await supabase
+      .from("miner")
+      .select("*")
+      .eq("name", miner_name)
+      .single();
+
+    if (existingMiner.data) {
+      miner = existingMiner;
+    } else {
+      const newMiner = await supabase
+        .from("miner")
+        .insert({ name: miner_name })
+        .select("*")
+        .single();
+
+      if (newMiner.error) {
+        console.error("Error creating new miner:", newMiner.error);
+        return;
+      }
+      miner = newMiner;
+    }
+
+    const invoice = await supabase
+      .from("invoices_transaction")
+      .insert({ miner_id: miner.data.id, cart, free_items: free, created_at })
       .select("*")
       .single();
 
-    if (res.error) {
-      console.log(res.error);
+    if (invoice.error) {
+      console.log(invoice.error);
       setIsLoading(false);
     } else {
       queryClient.invalidateQueries({
-        queryKey: [`miners`],
+        queryKey: ["invoices-dates"],
       });
       queryClient.invalidateQueries({
-        queryKey: [`miner-dates`],
+        queryKey: [`invoices`],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`miners-search`],
       });
       toast({
         title: "Successfully Inserted",
@@ -147,8 +176,7 @@ export function AddMinerModal() {
                         ) : (
                           <>
                             {searchedMiners?.data.length === 1 &&
-                            searchedMiners?.data[0].miner_name ===
-                              miner_name ? (
+                            searchedMiners?.data[0].name === miner_name ? (
                               <></>
                             ) : (
                               <>
@@ -156,15 +184,15 @@ export function AddMinerModal() {
                                   <div className="p-4">
                                     {searchedMiners?.data?.map((miner) => (
                                       <>
-                                        <div
+                                        <button
                                           onClick={() =>
-                                            setMiner_name(miner.miner_name)
+                                            setMiner_name(miner.name)
                                           }
                                           key={miner.id}
                                           className="text-sm"
                                         >
-                                          {miner.miner_name}
-                                        </div>
+                                          {miner.name}
+                                        </button>
                                         <Separator className="my-2" />
                                       </>
                                     ))}
@@ -181,7 +209,7 @@ export function AddMinerModal() {
               </div>
               {/* <FormField
                 control={form.control}
-                name="miner_name"
+                miner_name="miner_name"
                 render={({ field }) => (
                   <FormItem>
                     <div className="grid w-full max-w-sm items-center gap-1.5 relative">

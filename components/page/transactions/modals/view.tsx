@@ -14,80 +14,78 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
-import { useMinerContext } from "@/contexts/MinerProvider";
 import { Loader2, Minus, Plus, Trash } from "lucide-react";
 import supabase from "@/utils/supabase";
-import { Miner } from "@/lib/interfaces";
 import { useQueryClient } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import { InvoiceType } from "@/lib/interfaces/new.interface";
 
 export function ViewMinersModal() {
-  const { toggleView, setToggleView, setSelectedMiner, selectedMiner } =
-    useMinerContext();
+  const { toggleView, setToggleView, setSelectedInvoice, selectedInvoice } =
+    useInvoiceContext();
 
-  const [free, setFree] = useState(selectedMiner?.free || 0);
-  const [cart, setCart] = useState<number[]>(selectedMiner?.cart || []);
+  const [free_items, setFree] = useState(selectedInvoice?.free_items || 0);
+  const [cart, setCart] = useState<number[]>(selectedInvoice?.cart || []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
-  async function updateMiner(minerToUpdate: Miner) {
+  async function updateMiner(prevInvoice: InvoiceType) {
     setIsLoading(true);
     const res = await supabase
-      .from("invoice")
+      .from("invoices_transaction")
       .update({
-        ...minerToUpdate,
-        ["cart"]: minerToUpdate.cart,
-        ["miner_name"]: minerToUpdate.miner_name,
-        ["free"]: minerToUpdate.free,
+        ["cart"]: prevInvoice.cart,
+        ["free_items"]: prevInvoice.free_items,
       })
-      .eq("id", minerToUpdate.id);
+      .eq("id", prevInvoice.id);
 
     if (res.error) console.log(res);
     else {
       queryClient.invalidateQueries({
-        queryKey: [`miners`],
+        queryKey: ["invoices-dates"],
       });
       queryClient.invalidateQueries({
-        queryKey: [`miner-dates`],
+        queryKey: [`invoices`],
       });
       setToggleView(false);
-      setSelectedMiner(undefined);
+      setSelectedInvoice(undefined);
       setIsLoading(false);
     }
   }
 
   async function handleSave() {
-    if (!selectedMiner) return null;
-    const newMiner = { ...selectedMiner, cart, free };
-    await updateMiner(newMiner as Miner);
+    if (!selectedInvoice) return null;
+    const newMiner = { ...selectedInvoice, cart, free_items };
+    await updateMiner(newMiner as InvoiceType);
   }
 
   function handleDeleteItem(index: number) {
-    if (!selectedMiner) return null;
-    if (selectedMiner?.cart.length <= 1) return null;
+    if (!selectedInvoice) return null;
+    if (cart.length <= 1) return null;
 
-    const updatedCart = [...selectedMiner.cart];
+    const updatedCart = [...cart];
     updatedCart.splice(index, 1);
     setCart(updatedCart);
   }
 
   const noChanges = useMemo(() => {
     // Check if arrays have the same length
-    if (cart.length !== selectedMiner?.cart.length) {
+    if (cart.length !== selectedInvoice?.cart.length) {
       return false;
     }
 
-    if (free !== selectedMiner?.free) return false;
+    if (free_items !== selectedInvoice?.free_items) return false;
 
-    // Check if every element in cart exists in selectedMiner?.cart
-    return cart.every((element) => selectedMiner?.cart.includes(element));
-  }, [cart, free]);
+    // Check if every element in cart exists in selectedInvoice?.cart
+    return cart.every((element) => selectedInvoice?.cart.includes(element));
+  }, [cart, free_items]);
 
   function getTotalOfCart() {
-    if (!selectedMiner) return null;
+    if (!selectedInvoice) return null;
     const total = cart.reduce((acc, item) => acc + item, 0);
     return total;
   }
@@ -96,22 +94,22 @@ export function ViewMinersModal() {
       open={toggleView}
       onOpenChange={(e) => {
         setToggleView(e);
-        setSelectedMiner(undefined);
+        setSelectedInvoice(undefined);
       }}
     >
       <DialogContent className="max-w-[320px] sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Miner Cart</DialogTitle>
+          <DialogTitle>InvoiceType Cart</DialogTitle>
           <DialogDescription>Here is the cart for the miner</DialogDescription>
         </DialogHeader>
         <div className="w-full flex justify-center items-center flex-col gap-2">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="free" className="text-right">
+            <Label htmlFor="free_items" className="text-right">
               Free
             </Label>
             <Input
-              id="free"
-              value={free}
+              id="free_items"
+              value={free_items}
               onChange={(e) => setFree(Number(e.target.value))}
               type="number"
               className="col-span-1"
@@ -125,7 +123,7 @@ export function ViewMinersModal() {
                 <Plus />
               </Button>
               <Button
-                disabled={free < 1 || isLoading}
+                disabled={free_items < 1 || isLoading}
                 className="w-10 h-10 p-1"
                 onClick={() => setFree((prev) => prev - 1)}
               >

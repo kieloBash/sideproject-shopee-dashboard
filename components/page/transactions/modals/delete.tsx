@@ -9,41 +9,41 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useMinerContext } from "@/contexts/MinerProvider";
+import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 import supabase from "@/utils/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export function DeleteMinerModal() {
-  const { selectedMiner, setSelectedMiner, toggleDelete, setToggleDelete } =
-    useMinerContext();
+  const { selectedInvoice, setSelectedInvoice, toggleDelete, setToggleDelete } =
+    useInvoiceContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
   async function deleteMiner() {
-    if (selectedMiner === undefined) return null;
+    if (selectedInvoice === undefined) return null;
     setIsLoading(true);
 
     const res = await supabase
-      .from("invoice")
+      .from("invoices_transaction")
       .delete()
-      .eq("id", selectedMiner.id);
+      .eq("id", selectedInvoice.id);
 
     if (res.error) {
       console.log(res);
       setIsLoading(false);
     } else {
       setToggleDelete(false);
-      setSelectedMiner(undefined);
+      setSelectedInvoice(undefined);
       setIsLoading(false);
 
       queryClient.invalidateQueries({
-        queryKey: [`miners`],
+        queryKey: ["invoices-dates"],
       });
       queryClient.invalidateQueries({
-        queryKey: [`miner-dates`],
+        queryKey: [`invoices`],
       });
     }
   }
@@ -52,16 +52,17 @@ export function DeleteMinerModal() {
       open={toggleDelete}
       onOpenChange={(e) => {
         setToggleDelete(e);
-        setSelectedMiner(undefined);
+        setSelectedInvoice(undefined);
       }}
     >
       <AlertDialogContent className="max-w-[320px]">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will delete miner{" "}
+            This will delete invoice{" "}
             <span className="font-bold underline underline-offset-2">
-              {selectedMiner?.miner_name || ""}
+              Cart: ({selectedInvoice?.cart.join(",")}) |{" "}
+              {selectedInvoice?.free_items} free
             </span>{" "}
             and cannot be undone
           </AlertDialogDescription>
@@ -70,7 +71,7 @@ export function DeleteMinerModal() {
           <AlertDialogCancel
             disabled={isLoading}
             onClick={() => {
-              setSelectedMiner(undefined);
+              setSelectedInvoice(undefined);
             }}
           >
             Cancel

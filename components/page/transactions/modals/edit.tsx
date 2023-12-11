@@ -9,37 +9,36 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMinerContext } from "@/contexts/MinerProvider";
-import { Miner } from "@/lib/interfaces";
+import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import { InvoiceType } from "@/lib/interfaces/new.interface";
 import supabase from "@/utils/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export function EditMinerModal() {
-  const { toggleEdit, setToggleEdit, setSelectedMiner, selectedMiner } =
-    useMinerContext();
+  const { toggleEdit, setToggleEdit, setSelectedInvoice, selectedInvoice } =
+    useInvoiceContext();
 
-  const [name, setName] = useState<string>(selectedMiner?.miner_name || "");
+  const [name, setName] = useState<string>(selectedInvoice?.miner?.name || "");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const noChanges = useMemo(() => {
-    if (name !== selectedMiner?.miner_name) return false;
+    if (name !== selectedInvoice?.miner?.name) return false;
 
     return true;
   }, [name]);
 
   const queryClient = useQueryClient();
 
-  async function updateMiner(minerToUpdate: Miner) {
+  async function updateMiner(minerToUpdate: InvoiceType) {
     setIsLoading(true);
     const res = await supabase
-      .from("invoice")
+      .from("invoices_transaction")
       .update({
         ...minerToUpdate,
         ["cart"]: minerToUpdate.cart,
-        ["miner_name"]: minerToUpdate.miner_name,
-        ["free"]: minerToUpdate.free,
+        ["free_items"]: minerToUpdate.free_items,
       })
       .eq("id", minerToUpdate.id);
 
@@ -52,14 +51,14 @@ export function EditMinerModal() {
         queryKey: [`miner-dates`],
       });
       setToggleEdit(false);
-      setSelectedMiner(undefined);
+      setSelectedInvoice(undefined);
       setIsLoading(false);
     }
   }
 
   async function handleSave() {
-    if (!selectedMiner) return null;
-    const newMiner: Miner = { ...selectedMiner, miner_name: name };
+    if (!selectedInvoice) return null;
+    const newMiner: InvoiceType = { ...selectedInvoice };
     await updateMiner(newMiner);
   }
 
@@ -68,12 +67,12 @@ export function EditMinerModal() {
       open={toggleEdit}
       onOpenChange={(e) => {
         setToggleEdit(e);
-        setSelectedMiner(undefined);
+        setSelectedInvoice(undefined);
       }}
     >
       <DialogContent className="max-w-[320px] sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Edit Miner</DialogTitle>
+          <DialogTitle>Edit InvoiceType</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">

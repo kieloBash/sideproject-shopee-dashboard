@@ -19,7 +19,7 @@ const getUniqueCreatedAtValues = async () => {
 
 const useUniqueDates = () => {
   const { data, isLoading } = useQuery({
-    queryKey: ["miner-dates"],
+    queryKey: ["invoices-dates"],
     queryFn: getUniqueCreatedAtValues,
   });
 

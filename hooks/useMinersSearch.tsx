@@ -1,6 +1,6 @@
 "use client";
 
-import { Miner } from "@/lib/interfaces";
+import { MinerType } from "@/lib/interfaces/new.interface";
 import supabase from "@/utils/supabase";
 import { useQuery } from "@tanstack/react-query";
 
@@ -13,18 +13,14 @@ const useFetchMinersSearch = ({ searchName }: { searchName: string }) => {
         return [];
       }
 
-      let supabaseQuery = supabase.from("invoice").select("*");
+      let supabaseQuery = supabase.from("miner").select("*");
 
       // Use ilike for case-insensitive search
-      supabaseQuery = supabaseQuery.filter(
-        "miner_name",
-        "ilike",
-        `%${searchName}%`
-      );
+      supabaseQuery = supabaseQuery.filter("name", "ilike", `%${searchName}%`);
 
       const { data: miners, error } = await supabaseQuery;
 
-      return miners as Miner[];
+      return miners as MinerType[];
     },
     enabled: searchName !== "",
   });
