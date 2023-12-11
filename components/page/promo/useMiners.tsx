@@ -18,11 +18,17 @@ const useFetchMiners = ({
 
       if (searchName) {
         // Use ilike for case-insensitive search
-        supabaseQuery = supabaseQuery
-          .filter("name", "ilike", `%${searchName}%`)
-          .limit(limit);
+        supabaseQuery = supabaseQuery.filter(
+          "name",
+          "ilike",
+          `%${searchName}%`
+        );
+        // .limit(limit);
       }
-      supabaseQuery = supabaseQuery.limit(limit);
+      // Add order by rewardpts
+      supabaseQuery = supabaseQuery.order("rewardpts", { ascending: false }); // Set the desired order
+
+      // supabaseQuery = supabaseQuery.limit(limit);
       const { data: miners, error } = await supabaseQuery;
 
       return miners as MinerType[];

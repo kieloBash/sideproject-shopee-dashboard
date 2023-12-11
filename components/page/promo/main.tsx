@@ -17,6 +17,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { MinerType } from "@/lib/interfaces/new.interface";
 import supabase from "@/utils/supabase";
 import { useQueryClient } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const PromoMain = () => {
   const [stringVal, setStringVal] = useState("");
@@ -84,89 +85,93 @@ const PromoMain = () => {
           onChange={(e) => setStringVal(e.target.value)}
         />
       </div>
-      <div className="w-full h-[calc(100vh-10rem)] py-4">
-        <div className="w-full h-full grid grid-cols-1 gap-1.5 grid-rows-5">
-          {miners?.data?.map((miner) => {
-            return (
-              <div
-                className="w-full h-full p-4 border rounded-md flex flex-col gap-2 justify-center items-center"
-                key={miner.id}
-              >
-                <div className="flex gap-2 w-full justify-between items-center">
-                  <h3 className="font-bold text-lg">{miner.name}</h3>
-                  <p className="text-sm">
-                    Reward Points:{" "}
-                    <span className="font-medium">{miner.rewardpts}</span>
-                  </p>
-                </div>
-                <div className="w-full flex flex-col gap-y-0.5">
-                  <Progress
-                    value={miner.rewardpts}
-                    className="w-full h-3 rounded-none"
-                  />
-                  <div className="w-full grid grid-cols-10 h-2">
-                    {Array(10)
-                      .fill([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
-                      .map((_, i) => {
-                        return (
-                          <div
-                            className="text-xs text-muted-foreground text-right"
-                            key={i}
-                          >
-                            {_[i]}
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-                <div className="w-full flex justify-end items-center gap-2 mt-1">
-                  <Button
-                    type="button"
-                    onClick={() => handleLiked(miner)}
-                    className="text-xs"
-                    size={"sm"}
-                    variant={!miner.liked ? "default" : "outline"}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      </>
-                    ) : (
-                      <>
-                        <ThumbsUp className="w-3 h-3 mr-2" /> Liked
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => handleShared(miner)}
-                    className="text-xs"
-                    size={"sm"}
-                    variant={!miner.shared ? "default" : "outline"}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      </>
-                    ) : (
-                      <>
-                        <ArrowUpRightSquareIcon className="w-3 h-3 mr-2" />{" "}
-                        Shared
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+      {miners.isLoading ? (
+        <div className="w-full h-[calc(100vh-7rem)] flex justify-center items-center">
+          <Loader2 className="w-5 h-5 animate-spin" />
         </div>
-      </div>
-      <div className="w-full flex-1 flex justify-end items-center gap-2">
-        <Button>Prev</Button>
-        <Button>Next</Button>
-      </div>
+      ) : (
+        <>
+          <ScrollArea className="w-full h-[calc(100vh-7rem)] py-4">
+            <div className="w-full flex flex-col gap-1.5">
+              {miners?.data?.map((miner) => {
+                return (
+                  <div
+                    className="w-full h-[8.5rem] p-4 border rounded-md flex flex-col gap-2 justify-center items-center"
+                    key={miner.id}
+                  >
+                    <div className="flex gap-2 w-full justify-between items-center">
+                      <h3 className="font-bold text-lg">{miner.name}</h3>
+                      <p className="text-sm">
+                        Reward Points:{" "}
+                        <span className="font-medium">{miner.rewardpts}</span>
+                      </p>
+                    </div>
+                    <div className="w-full flex flex-col gap-y-0.5">
+                      <Progress
+                        value={miner.rewardpts}
+                        className="w-full h-3 rounded-none"
+                      />
+                      <div className="w-full grid grid-cols-10 h-2">
+                        {Array(10)
+                          .fill([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+                          .map((_, i) => {
+                            return (
+                              <div
+                                className="text-xs text-muted-foreground text-right"
+                                key={i}
+                              >
+                                {_[i]}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                    <div className="w-full flex justify-end items-center gap-2 mt-1">
+                      <Button
+                        type="button"
+                        onClick={() => handleLiked(miner)}
+                        className="text-xs"
+                        size={"sm"}
+                        variant={!miner.liked ? "default" : "outline"}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          </>
+                        ) : (
+                          <>
+                            <ThumbsUp className="w-3 h-3 mr-2" /> Liked
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleShared(miner)}
+                        className="text-xs"
+                        size={"sm"}
+                        variant={!miner.shared ? "default" : "outline"}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          </>
+                        ) : (
+                          <>
+                            <ArrowUpRightSquareIcon className="w-3 h-3 mr-2" />{" "}
+                            Shared
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </>
+      )}
     </>
   );
 };
