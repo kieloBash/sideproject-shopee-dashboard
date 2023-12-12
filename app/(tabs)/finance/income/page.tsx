@@ -1,7 +1,12 @@
 import React from "react";
+import { IncomeForm } from "./income-form";
 
 const IncomePage = () => {
-  return <div>IncomePage</div>;
+  return (
+    <>
+      <IncomeForm />
+    </>
+  );
 };
 
 export default IncomePage;
