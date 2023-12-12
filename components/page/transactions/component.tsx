@@ -34,18 +34,19 @@ import { AddMinerModal } from "./modals/add";
 import { ListMinerModal } from "./modals/lists";
 import useFetchInvoices from "@/hooks/useInvoices";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
+import { useSession } from "next-auth/react";
 
 export type StatusMinerFilterType = "All" | "Pending" | "Confirmed";
 const TransactionComponent = () => {
   const [filter, setFilter] = useState<StatusMinerFilterType>("All");
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const { data: session } = useSession();
 
   const { selectedInvoice } = useInvoiceContext();
 
   const miners = useFetchMiners({ filter, date });
   const uniqueDates = useUniqueDates();
   const invoices = useFetchInvoices({ filter, date });
-  console.log(invoices);
 
   return (
     <>
@@ -124,7 +125,14 @@ const TransactionComponent = () => {
               <ScrollArea className="px-2 w-full h-[calc(100vh-9.6rem)] mt-2">
                 <div className="w-full py-2 h-full flex flex-col gap-1.5">
                   {invoices?.data?.map((invoice) => {
-                    return <MinerCard invoice={invoice} key={invoice.id} />;
+                    return (
+                      <MinerCard
+                        // @ts-ignore
+                        user_id={(session?.user?.id as string) || ""}
+                        invoice={invoice}
+                        key={invoice.id}
+                      />
+                    );
                   })}
                 </div>
               </ScrollArea>
