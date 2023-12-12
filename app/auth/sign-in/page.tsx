@@ -7,7 +7,7 @@ import { UserAuthFormLogin } from "./user-auth-form";
 
 export const metadata: Metadata = {
   title: "LizBoutique - Shopee | Authentication",
-  description: "Authentication for LizBoutique",
+  description: "Authentication for LizBoutique made by bb",
 };
 
 export default function SignInPage() {
