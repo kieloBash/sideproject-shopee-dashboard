@@ -13,8 +13,6 @@ const Sidebar = () => {
     { href: "/dashboard", label: "Home" },
     { href: "/transactions", label: "Miners" },
     { href: "/promo", label: "Promo" },
-    { href: "/finance/income", label: "Income" },
-    { href: "/finance/expense", label: "Expenses" },
   ];
   const pathname = usePathname();
   const { toggle, setToggle } = useSidebar();
