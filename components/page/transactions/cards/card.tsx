@@ -27,6 +27,7 @@ import {
   CircleIcon,
   DollarSign,
   MinusCircle,
+  PenBox,
   ShoppingBag,
 } from "lucide-react";
 
@@ -39,13 +40,7 @@ import { useState } from "react";
 import { InvoiceType } from "@/lib/interfaces/new.interface";
 import { useInvoiceContext } from "@/contexts/InvoiceProvider";
 
-export function MinerCard({
-  invoice,
-  user_id,
-}: {
-  invoice: InvoiceType;
-  user_id: string;
-}) {
+export function MinerCard({ invoice }: { invoice: InvoiceType }) {
   const { setSelectedInvoice, setToggleView, setToggleDelete, setToggleEdit } =
     useInvoiceContext();
 
@@ -88,18 +83,6 @@ export function MinerCard({
           ["rewardpts"]: miner.data.rewardpts + 1,
         })
         .eq("id", miner.data.id);
-
-      const newIncome = await supabase
-        .from("income")
-        .insert({
-          user_id,
-          date: currDate,
-          source: "Shopee - Live",
-          amount: getTotalOfCart(),
-          description: `Mined Confirmed by: ${invoice.miner?.name}`,
-        })
-        .select("*")
-        .single();
     } else {
       newMiner = await supabase
         .from("miner")
